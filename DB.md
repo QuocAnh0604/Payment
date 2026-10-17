@@ -4,11 +4,9 @@
 
 - Database: PostgreSQL
 - Schema migration: Flyway
-- Hibernate setting: `ddl-auto=validate`
 - Tiền tệ: `CHAR(3)`
 - Số tiền: `NUMERIC(19,4)`
 - Thời gian: `TIMESTAMP`
-- Ledger được bảo vệ append-only bằng PostgreSQL trigger, không cho UPDATE/DELETE.
 
 ## 2. Entity relationship
 
@@ -224,12 +222,4 @@ Authorization: Bearer <access-token>
 | `POST` | `/v1/topups` | Tạo internal top-up |
 | `GET` | `/v1/topups/{id}` | Lấy top-up order |
 
-## 5. Trạng thái và giới hạn hiện tại
-
-- Chưa có withdrawal.
-- Chưa có payment provider/bank integration.
-- Chưa có provider callback và reconciliation.
-- Chưa có API list card/wallet và lịch sử có pagination.
-- Các API đọc payment/top-up/ledger cần được bổ sung ownership filtering trước production.
-- Idempotency hiện ở mức cơ bản theo order ID; cần bổ sung request fingerprint và conflict handling.
 
