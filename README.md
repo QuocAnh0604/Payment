@@ -184,8 +184,3 @@ Các migration hiện có:
 - `V3__add_auth_refresh_and_otp.sql`: password hash, refresh tokens và OTP challenges.
 
 Chi tiết schema và quan hệ nằm trong [DB.md](DB.md).
-
-## Trạng thái project
-
-Project hiện phù hợp cho demo/backend portfolio. Các phần chưa có gồm payment provider thật, withdrawal, webhook/callback, reconciliation và bộ integration/concurrency test đầy đủ.
-
