@@ -1,0 +1,3 @@
+ALTER TABLE cards
+    ALTER COLUMN last4 TYPE VARCHAR(4)
+    USING last4::VARCHAR(4);
