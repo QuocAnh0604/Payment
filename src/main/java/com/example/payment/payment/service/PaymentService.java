@@ -5,6 +5,10 @@ import com.example.payment.payment.dto.ExecutePaymentRequest;
 import com.example.payment.payment.entity.*;
 import com.example.payment.payment.exception.BusinessException;
 import com.example.payment.payment.repository.*;
+import com.example.payment.otp.OtpPurpose;
+import com.example.payment.otp.OtpService;
+import com.example.payment.user.User;
+import com.example.payment.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +24,11 @@ public class PaymentService {
     private final PaymentEventRepository eventRepo;
     private final PaymentOrderRepository orderRepo;
     private final LedgerService ledgerService;
+    private final UserRepository userRepo;
+    private final OtpService otpService;
 
     @Transactional
-    public PaymentOrder execute(ExecutePaymentRequest req) {
+    public PaymentOrder execute(ExecutePaymentRequest req, String userId) {
         Optional<PaymentOrder> existing = orderRepo.findById(req.paymentOrderId());
         if (existing.isPresent()) return existing.get();
         BigDecimal amount = parseAmount(req.amount());
@@ -30,16 +36,23 @@ public class PaymentService {
             throw BusinessException.badRequest("SAME_CARD", "Thẻ nguồn và thẻ đích phải khác nhau");
         Card source = cardRepo.findById(req.sourceCardId()).orElseThrow(() -> BusinessException.notFound("CARD_NOT_FOUND", "Không thấy thẻ nguồn"));
         Card dest = cardRepo.findById(req.destinationCardId()).orElseThrow(() -> BusinessException.notFound("CARD_NOT_FOUND", "Không thấy thẻ đích"));
-        if (!source.getUserId().equals(req.userId()))
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> BusinessException.notFound("USER_NOT_FOUND", "Không tìm thấy user"));
+        if (user.getStatus() != EntityStatus.ACTIVE)
+            throw BusinessException.badRequest("USER_INACTIVE", "User không hoạt động");
+        otpService.assertVerified(req.otpId(), userId, OtpPurpose.TRANSFER, req.paymentOrderId());
+        if (!source.getUserId().equals(userId))
             throw BusinessException.badRequest("CARD_NOT_OWNED", "Thẻ nguồn không thuộc user này");
         if (!source.isUsable() || !dest.isUsable())
             throw BusinessException.badRequest("CARD_INACTIVE", "Thẻ bị khóa hoặc hết hạn");
         PaymentEvent event = eventRepo.findById(req.checkoutId()).orElseGet(() -> {
             PaymentEvent e = new PaymentEvent();
             e.setCheckoutId(req.checkoutId());
-            e.setUserId(req.userId());
+            e.setUserId(userId);
             return eventRepo.save(e);
         });
+        if (!event.getUserId().equals(userId))
+            throw BusinessException.badRequest("CHECKOUT_NOT_OWNED", "Checkout không thuộc user này");
         PaymentOrder order = new PaymentOrder();
         order.setPaymentOrderId(req.paymentOrderId());
         order.setCheckoutId(event.getCheckoutId());

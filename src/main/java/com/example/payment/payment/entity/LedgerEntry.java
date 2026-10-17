@@ -17,8 +17,10 @@ public class LedgerEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_id")
     private Long entryId;
-    @Column(name = "payment_order_id", nullable = false, updatable = false)
+    @Column(name = "payment_order_id", updatable = false)
     private String paymentOrderId;
+    @Column(name = "top_up_order_id", updatable = false)
+    private String topUpOrderId;
     @Column(name = "card_id", nullable = false, updatable = false)
     private String cardId;
     @Enumerated(EnumType.STRING)
@@ -36,6 +38,16 @@ public class LedgerEntry {
         e.paymentOrderId = orderId;
         e.cardId = cardId;
         e.entryType = type;
+        e.amount = amount;
+        e.currency = currency;
+        return e;
+    }
+
+    public static LedgerEntry ofTopUp(String topUpOrderId, String cardId, BigDecimal amount, String currency) {
+        LedgerEntry e = new LedgerEntry();
+        e.topUpOrderId = topUpOrderId;
+        e.cardId = cardId;
+        e.entryType = EntryType.CREDIT;
         e.amount = amount;
         e.currency = currency;
         return e;

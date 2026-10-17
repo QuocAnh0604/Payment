@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,9 @@ public class PaymentController {
     private final LedgerEntryRepository ledgerRepo;
 
     @PostMapping("/payments")
-    public ResponseEntity<PaymentOrderResponse> pay(@Valid @RequestBody ExecutePaymentRequest req) {
-        PaymentOrder order = paymentService.execute(req);
+    public ResponseEntity<PaymentOrderResponse> pay(@Valid @RequestBody ExecutePaymentRequest req,
+                                                    Authentication authentication) {
+        PaymentOrder order = paymentService.execute(req, authentication.getName());
         return ResponseEntity.ok(PaymentOrderResponse.from(order));
     }
 

@@ -16,4 +16,8 @@ public class LedgerService {
         ledgerRepo.save(LedgerEntry.of(orderId, fromCard, EntryType.DEBIT, amount, currency));
         ledgerRepo.save(LedgerEntry.of(orderId, toCard, EntryType.CREDIT, amount, currency));
     }
+
+    public void recordTopUp(String topUpOrderId, String cardId, BigDecimal amount, String currency) {
+        ledgerRepo.save(LedgerEntry.ofTopUp(topUpOrderId, cardId, amount, currency));
+    }
 }
