@@ -4,7 +4,7 @@
 
 - Database: PostgreSQL
 - Schema migration: Flyway
-- Tiền tệ: `CHAR(3)`
+- Tiền tệ: `VARCHAR(3)`
 - Số tiền: `NUMERIC(19,4)`
 - Thời gian: `TIMESTAMP`
 
@@ -51,7 +51,7 @@ top_up_orders
 | `user_id` | `VARCHAR(36)` FK | Chủ sở hữu card |
 | `issuer` | `VARCHAR(100)` | Đơn vị phát hành |
 | `card_token` | `VARCHAR(255)` UNIQUE | Token card nội bộ |
-| `last4` | `CHAR(4)` | Bốn số cuối |
+| `last4` | `VARCHAR(4)` | Bốn số cuối |
 | `card_type` | `VARCHAR(10)` | Loại card |
 | `issue_date` | `DATE` | Ngày phát hành |
 | `expiry_date` | `DATE` | Ngày hết hạn |
@@ -66,7 +66,7 @@ top_up_orders
 | `wallet_id` | `VARCHAR(36)` PK | ID wallet |
 | `card_id` | `VARCHAR(36)` UNIQUE FK | Card liên kết |
 | `balance` | `NUMERIC(19,4)` | Số dư, không âm |
-| `currency` | `CHAR(3)` | Currency của wallet |
+| `currency` | `VARCHAR(3)` | Currency của wallet |
 | `version` | `BIGINT` | JPA optimistic version |
 
 Wallet được lock bằng `PESSIMISTIC_WRITE` trong transfer và top-up.
@@ -89,7 +89,7 @@ Wallet được lock bằng `PESSIMISTIC_WRITE` trong transfer và top-up.
 | `source_card_id` | `VARCHAR(36)` FK | Card nguồn |
 | `destination_card_id` | `VARCHAR(36)` FK | Card đích |
 | `amount` | `NUMERIC(19,4)` | Số tiền transfer |
-| `currency` | `CHAR(3)` | Currency |
+| `currency` | `VARCHAR(3)` | Currency |
 | `payment_order_status` | `VARCHAR(20)` | `NOT_STARTED`, `EXECUTING`, `SUCCESS`, `FAILED` |
 | `failure_reason` | `VARCHAR(255)` | Lý do thất bại |
 | `wallet_updated` | `BOOLEAN` | Đã cập nhật wallet chưa |
@@ -107,7 +107,7 @@ Database có constraint không cho source card và destination card giống nhau
 | `card_id` | `VARCHAR(36)` FK | Card nguồn nội bộ |
 | `wallet_id` | `VARCHAR(36)` FK | Wallet nhận tiền |
 | `amount` | `NUMERIC(19,4)` | Số tiền |
-| `currency` | `CHAR(3)` | Currency |
+| `currency` | `VARCHAR(3)` | Currency |
 | `status` | `VARCHAR(20)` | `EXECUTING`, `SUCCESS`, `FAILED` |
 | `failure_reason` | `VARCHAR(255)` | Lý do thất bại |
 | `wallet_updated` | `BOOLEAN` | Đã cộng wallet chưa |
@@ -126,7 +126,7 @@ Database có constraint không cho source card và destination card giống nhau
 | `card_id` | `VARCHAR(36)` FK | Card/wallet representation hiện tại |
 | `entry_type` | `VARCHAR(6)` | `DEBIT` hoặc `CREDIT` |
 | `amount` | `NUMERIC(19,4)` | Số tiền |
-| `currency` | `CHAR(3)` | Currency |
+| `currency` | `VARCHAR(3)` | Currency |
 | `created_at` | `TIMESTAMP` | Thời điểm ghi |
 
 Constraint yêu cầu mỗi ledger entry thuộc đúng một loại order: payment hoặc top-up.
