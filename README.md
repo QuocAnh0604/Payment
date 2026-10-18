@@ -1,4 +1,4 @@
-# Payment System
+# PayLite
 
 Backend mô phỏng hệ thống thanh toán và chuyển tiền giữa các wallet, xây dựng bằng Spring Boot.
 
