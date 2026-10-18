@@ -15,7 +15,6 @@ Project tập trung vào các vấn đề quan trọng của backend thanh toán
 - PostgreSQL
 - Flyway
 - SMTP email cho OTP
-- Docker Compose
 
 ## Phạm vi chức năng
 
@@ -53,14 +52,7 @@ Wallet có thêm JPA `@Version` để hỗ trợ optimistic version checking, nh
 ### Yêu cầu
 
 - JDK 25
-- Docker Desktop
 - Maven Wrapper hoặc Maven đã cài đặt
-
-### Khởi động PostgreSQL
-
-```bash
-docker compose up -d
-```
 
 ### Cấu hình môi trường
 
@@ -182,5 +174,8 @@ Các migration hiện có:
 - `V1__init.sql`: users, cards, wallets, payment events, payment orders và ledger.
 - `V2__add_top_up.sql`: top-up orders và liên kết ledger với top-up.
 - `V3__add_auth_refresh_and_otp.sql`: password hash, refresh tokens và OTP challenges.
+- `V4__change_card_last4_to_varchar.sql`: đổi `cards.last4` từ `CHAR(4)` sang `VARCHAR(4)`.
+- `V5__change_ledger_currency_to_varchar.sql`: đổi currency của ledger, payment order và top-up order sang `VARCHAR(3)`.
+- `V6__change_remaining_char_columns_to_varchar.sql`: đổi các cột `currency`/`last4` còn lại sang `VARCHAR` và loại bỏ padding của `CHAR`.
 
 Chi tiết schema và quan hệ nằm trong [DB.md](DB.md).
